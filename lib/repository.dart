@@ -11,7 +11,7 @@ class ProductRepository {
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       final jsonMap = json.decode(response.body);
-      final productsJson = jsonMap['contents'][0]['mainContent'][0]['contents'];
+      final productsJson = jsonMap['plpResults']['records'];
       return productsJson
           .map<Record>((productJson) => Record.fromJson(productJson))
           .toList();
