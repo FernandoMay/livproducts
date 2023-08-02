@@ -98,44 +98,6 @@ class _ProductSearchViewState extends State<ProductSearchView> {
           ),
         ],
       ),
-      // navigationBar: const CupertinoNavigationBar(
-      //   middle: Text('Product Search'),
-      // ),
-      // child: Column(
-      //   children: [
-      //     Padding(
-      //       padding: const EdgeInsets.all(16.0),
-      //       child: CupertinoTextField(
-      //         controller: _searchController,
-      //         placeholder: 'Enter a product name',
-      //         onChanged: (value) => value.isNotEmpty
-      //             ? _fetchProducts()
-      //             : setState(() => _products = []),
-      //         onSubmitted: (value) => (value) => value.isNotEmpty
-      //             ? _fetchProducts()
-      //             : setState(() => _products = []),
-      //       ),
-      //     ),
-      //     Padding(
-      //       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      //       child: CupertinoFormRow(
-      //         prefix: const Text('Ordenar por:'),
-      //         child: CupertinoPicker(
-      //           itemExtent: 32.0,
-      //           onSelectedItemChanged: (index) => _onSortOptionChanged(index),
-      //           children: _buildSortOptions(),
-      //         ),
-      //       ),
-      //     ),
-      //     Expanded(
-      //       child: ListView.builder(
-      //         itemCount: _products.length,
-      //         itemBuilder: (context, index) =>
-      //             _buildProductItem(_products[index]),
-      //       ),
-      //     ),
-      //   ],
-      // ),
     );
   }
 
