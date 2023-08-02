@@ -61,7 +61,7 @@ class _ProductSearchViewState extends State<ProductSearchView> {
           SliverPadding(
             padding: const EdgeInsets.all(16.0),
             sliver: SliverToBoxAdapter(
-              child: CupertinoTextField(
+              child: CupertinoSearchTextField(
                 controller: _searchController,
                 placeholder: 'Ingresa nombre de producto',
                 onChanged: (value) {
