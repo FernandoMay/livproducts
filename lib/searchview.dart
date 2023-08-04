@@ -107,9 +107,11 @@ class _ProductSearchViewState extends State<ProductSearchView> {
         _searchController.text,
         sortOption: _currentSortOption,
       );
+      print(products);
       setState(() {
         _products = products;
       });
+      print(_products);
     } catch (e) {
       throw Exception(e);
     }
