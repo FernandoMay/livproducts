@@ -42,7 +42,7 @@ class _ProductSearchViewState extends State<ProductSearchView> {
       _currentSortOption = sortOptions[index];
     });
 
-    _fetchProducts(_searchController.text);
+    _fetchProducts();
   }
 
   @override
@@ -66,12 +66,12 @@ class _ProductSearchViewState extends State<ProductSearchView> {
                 placeholder: 'Ingresa nombre de producto',
                 onChanged: (value) {
                   value.isNotEmpty
-                      ? _fetchProducts(value)
+                      ? _fetchProducts()
                       : setState(() => _products = []);
                 },
                 onSubmitted: (value) {
                   value.isNotEmpty
-                      ? _fetchProducts(value)
+                      ? _fetchProducts()
                       : setState(() => _products = []);
                 },
               ),
@@ -101,10 +101,10 @@ class _ProductSearchViewState extends State<ProductSearchView> {
     );
   }
 
-  Future<void> _fetchProducts(String value) async {
+  Future<void> _fetchProducts() async {
     try {
       final products = await _repository.getProducts(
-        value, //_searchController.text,
+        _searchController.text,
         sortOption: _currentSortOption,
       );
       setState(() {
