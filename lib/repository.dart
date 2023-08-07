@@ -5,11 +5,9 @@ import 'package:livproducts/domain.dart';
 class ProductRepository {
   Future<List<Record>> getProducts(String searchTerm,
       {String sortOption = 'Relevancia|0'}) async {
-    const baseUrl = 'shopappst.liverpool.com.mx';
-
     final response = await http.get(
-      Uri.https(baseUrl,
-          '/appclienteservices/services/v6/plp/sf?page-number=1&search-string=$searchTerm&sort-option=$sortOption&force-plp=false&number-of-items-per-page=40&cleanProductName=false'),
+      Uri.parse(
+          'https://shopappst.liverpool.com.mx/appclienteservices/services/v6/plp/sf?page-number=1&search-string=$searchTerm&sort-option=$sortOption&force-plp=false&number-of-items-per-page=40&cleanProductName=false'),
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "GET, POST, OPTIONS",

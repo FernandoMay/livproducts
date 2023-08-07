@@ -15,16 +15,21 @@ class _ProductSearchViewState extends State<ProductSearchView> {
   List<Record> _products = [];
   String _currentSortOption = 'Relevancia|0';
 
-  List<Widget> _buildSortOptions() {
-    return [
-      const Text('Relevancia'),
-      const Text('Lo Más Nuevo'),
-      const Text('Menor precio'),
-      const Text('Mayor precio'),
-      const Text('Calificaciones'),
-      const Text('Más visto'),
-      const Text('Más vendido'),
-    ];
+  Future<void> _fetchProducts() async {
+    try {
+      final products = await _repository.getProducts(
+        _searchController.text,
+        sortOption: _currentSortOption,
+      );
+      setState(() {
+        _products = products;
+      });
+    } catch (e) {
+      throw Exception(e);
+      // setState(() {
+      //   _products = [Record(productId: "productId", skuRepositoryId: "skuRepositoryId", productDisplayName: e.toString(), productType: "productType", productAvgRating: 4, promotionalGiftMessage: promotionalGiftMessage, listPrice: listPrice, minimumListPrice: minimumListPrice, maximumListPrice: maximumListPrice, promoPrice: promoPrice, minimumPromoPrice: minimumPromoPrice, maximumPromoPrice: maximumPromoPrice, isHybrid: isHybrid, isMarketPlace: isMarketPlace, isImportationProduct: isImportationProduct, brand: brand, seller: seller, category: category, dwPromotionInfo: dwPromotionInfo, categoryBreadCrumbs: categoryBreadCrumbs, smImage: smImage, lgImage: lgImage, xlImage: xlImage, groupType: groupType, plpFlags: plpFlags, variantsColor: variantsColor)];
+      // });
+    }
   }
 
   void _onSortOptionChanged(int index) {
@@ -85,7 +90,15 @@ class _ProductSearchViewState extends State<ProductSearchView> {
                 child: CupertinoPicker(
                   itemExtent: 32.0,
                   onSelectedItemChanged: (index) => _onSortOptionChanged(index),
-                  children: _buildSortOptions(),
+                  children: const [
+                    Text('Relevancia'),
+                    Text('Lo Más Nuevo'),
+                    Text('Menor precio'),
+                    Text('Mayor precio'),
+                    Text('Calificaciones'),
+                    Text('Más visto'),
+                    Text('Más vendido'),
+                  ],
                 ),
               ),
             ),
@@ -101,75 +114,86 @@ class _ProductSearchViewState extends State<ProductSearchView> {
     );
   }
 
-  Future<void> _fetchProducts() async {
-    try {
-      final products = await _repository.getProducts(
-        _searchController.text,
-        sortOption: _currentSortOption,
-      );
-      setState(() {
-        _products = products;
-      });
-    } catch (e) {
-      throw Exception(e);
-    }
-  }
-
   Widget _buildProductItem(Record product) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Column(
+      child: Row(
         children: [
-          Image.network(product.lgImage),
-          Text(
-            product.productDisplayName,
-            style: CupertinoTheme.of(context)
-                .textTheme
-                .textStyle
-                .copyWith(fontSize: 16),
+          Image.network(
+            product.lgImage,
+            width: MediaQuery.of(context).size.width * 0.31416,
+            height: MediaQuery.of(context).size.width * 0.31416,
           ),
-          if (product.listPrice != product.promoPrice)
-            Text(
-              '\$${product.listPrice.toStringAsFixed(2)}',
-              style: const TextStyle(color: CupertinoColors.systemRed),
-            ),
-          Text(
-            '\$${product.promoPrice.toStringAsFixed(2)}',
-            style: const TextStyle(color: CupertinoColors.systemRed),
-          ),
-          if (product.variantsColor.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Colores disponibles:',
-                    style:
-                        CupertinoTheme.of(context).textTheme.textStyle.copyWith(
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  product.productDisplayName,
+                  style: CupertinoTheme.of(context)
+                      .textTheme
+                      .textStyle
+                      .copyWith(fontSize: 16),
+                ),
+              ),
+              if (product.listPrice != product.promoPrice)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    '\$${product.listPrice.toStringAsFixed(2)}',
+                    style: const TextStyle(
+                        color: CupertinoColors.systemGrey,
+                        fontSize: 18,
+                        decoration: TextDecoration.lineThrough),
+                  ),
+                ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  '\$${product.promoPrice.toStringAsFixed(2)}',
+                  style: const TextStyle(
+                      color: CupertinoColors.systemRed, fontSize: 24),
+                ),
+              ),
+              if (product.variantsColor.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Colores disponibles:',
+                        style: CupertinoTheme.of(context)
+                            .textTheme
+                            .textStyle
+                            .copyWith(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
                             ),
+                      ),
+                      const SizedBox(width: 4),
+                      Wrap(
+                        spacing: 4,
+                        children: product.variantsColor
+                            .map(
+                              (color) => Container(
+                                width: 16,
+                                height: 16,
+                                decoration: BoxDecoration(
+                                  color: _parseColor(color.colorHex),
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                            )
+                            .toList(),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 4),
-                  Wrap(
-                    spacing: 4,
-                    children: product.variantsColor
-                        .map(
-                          (color) => Container(
-                            width: 16,
-                            height: 16,
-                            decoration: BoxDecoration(
-                              color: _parseColor(color.colorHex),
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                        )
-                        .toList(),
-                  ),
-                ],
-              ),
-            ),
+                ),
+            ],
+          ),
         ],
       ),
     );
