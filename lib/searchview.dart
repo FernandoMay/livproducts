@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:livproducts/detailview.dart';
 import 'package:livproducts/domain.dart';
 import 'package:livproducts/repository.dart';
 
@@ -26,9 +27,6 @@ class _ProductSearchViewState extends State<ProductSearchView> {
       });
     } catch (e) {
       throw Exception(e);
-      // setState(() {
-      //   _products = [Record(productId: "productId", skuRepositoryId: "skuRepositoryId", productDisplayName: e.toString(), productType: "productType", productAvgRating: 4, promotionalGiftMessage: promotionalGiftMessage, listPrice: listPrice, minimumListPrice: minimumListPrice, maximumListPrice: maximumListPrice, promoPrice: promoPrice, minimumPromoPrice: minimumPromoPrice, maximumPromoPrice: maximumPromoPrice, isHybrid: isHybrid, isMarketPlace: isMarketPlace, isImportationProduct: isImportationProduct, brand: brand, seller: seller, category: category, dwPromotionInfo: dwPromotionInfo, categoryBreadCrumbs: categoryBreadCrumbs, smImage: smImage, lgImage: lgImage, xlImage: xlImage, groupType: groupType, plpFlags: plpFlags, variantsColor: variantsColor)];
-      // });
     }
   }
 
@@ -115,86 +113,102 @@ class _ProductSearchViewState extends State<ProductSearchView> {
   }
 
   Widget _buildProductItem(Record product) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        children: [
-          Image.network(
-            product.lgImage,
-            width: MediaQuery.of(context).size.width * 0.31416,
-            height: MediaQuery.of(context).size.width * 0.31416,
+    return CupertinoButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          CupertinoPageRoute(
+            builder: (context) => ProductDetailView(product: product),
           ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  product.productDisplayName,
-                  style: CupertinoTheme.of(context)
-                      .textTheme
-                      .textStyle
-                      .copyWith(fontSize: 16),
-                ),
-              ),
-              if (product.listPrice != product.promoPrice)
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            Image.network(
+              product.lgImage,
+              width: MediaQuery.of(context).size.width * 0.31416,
+              height: MediaQuery.of(context).size.width * 0.31416,
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    '\$${product.listPrice.toStringAsFixed(2)}',
-                    style: const TextStyle(
-                        color: CupertinoColors.systemGrey,
-                        fontSize: 18,
-                        decoration: TextDecoration.lineThrough),
+                    product.productDisplayName,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: CupertinoTheme.of(context)
+                        .textTheme
+                        .textStyle
+                        .copyWith(fontSize: 16),
                   ),
                 ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  '\$${product.promoPrice.toStringAsFixed(2)}',
-                  style: const TextStyle(
-                      color: CupertinoColors.systemRed, fontSize: 24),
-                ),
-              ),
-              if (product.variantsColor.isNotEmpty)
+                if (product.listPrice != product.promoPrice)
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      '\$${product.listPrice.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                          color: CupertinoColors.systemGrey,
+                          fontSize: 18,
+                          decoration: TextDecoration.lineThrough),
+                    ),
+                  ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Colores disponibles:',
-                        style: CupertinoTheme.of(context)
-                            .textTheme
-                            .textStyle
-                            .copyWith(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                            ),
-                      ),
-                      const SizedBox(width: 4),
-                      Wrap(
-                        spacing: 4,
-                        children: product.variantsColor
-                            .map(
-                              (color) => Container(
-                                width: 16,
-                                height: 16,
-                                decoration: BoxDecoration(
-                                  color: _parseColor(color.colorHex),
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                            )
-                            .toList(),
-                      ),
-                    ],
+                  child: Text(
+                    '\$${product.promoPrice.toStringAsFixed(2)}',
+                    style: const TextStyle(
+                        color: CupertinoColors.systemRed, fontSize: 24),
                   ),
                 ),
-            ],
-          ),
-        ],
+                if (product.variantsColor.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Colores disponibles:',
+                          style: CupertinoTheme.of(context)
+                              .textTheme
+                              .textStyle
+                              .copyWith(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                        ),
+                        const SizedBox(width: 4),
+                        Wrap(
+                          spacing: 4,
+                          children: product.variantsColor
+                              .map(
+                                (color) => Container(
+                                  width: 16,
+                                  height: 16,
+                                  decoration: BoxDecoration(
+                                    color: _parseColor(color.colorHex),
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                        strokeAlign: 2,
+                                        color: CupertinoTheme.of(context)
+                                            .primaryColor),
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
